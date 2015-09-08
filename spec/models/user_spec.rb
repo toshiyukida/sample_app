@@ -3,20 +3,19 @@ require 'spec_helper'
 describe User do
 
   before do
-    @user=User.new(name:"Example User",
-                   email:"user@example.com",
-                   password:"foobar",
-                   password_confirmation:"foobar" )
+    @user = User.new(name: "Example User", email: "user@example.com",
+                     password: "foobar", password_confirmation: "foobar")
   end
 
-  subject{@user}
+  subject { @user }
 
   it{should respond_to(:name)}
   it{should respond_to(:email)}
   it{should respond_to(:password_digest)}
   it{should respond_to(:password)}
-  it{should respond_to(:password_confirmation)}
-  it{should respond_to(:authenticate)}
+  it { should respond_to(:password_confirmation) }
+  it { should respond_to(:remember_token) }
+  it { should respond_to(:authenticate) }
 
   it {should be_valid}
 
@@ -63,7 +62,7 @@ describe User do
 
     it{should_not be_valid}
   end
-#-----課題１の内容-----
+ #-----課題１の内容-----
  describe "email address with mixed case" do
    let(:mixed_case_email){"Foo@ExAMOle.CoM"}
 
@@ -73,7 +72,7 @@ describe User do
      expect(@user.reload.email).to eq mixed_case_email.downcase
    end
  end
-#--------------------------
+ #--------------------------
   describe "when password is not present" do
     before do
       @user=User.new(name:"Example User",
@@ -107,6 +106,11 @@ describe User do
 
       it{should_not eq user_for_invalid_password}
       specify{expect(user_for_invalid_password).to be_false}
+    end
+  
+    describe "remember token" do
+      before { @user.save }
+      its(:remember_token) { should_not be_blank }
     end
   end
 end
